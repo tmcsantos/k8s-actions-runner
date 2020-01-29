@@ -1,0 +1,15 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    app: actions-runner
+  name: actions-runner
+spec:
+  template:
+    spec:
+      $setElementOrder/containers:
+      - name: runner
+      - name: docker
+      containers:
+      - imagePullPolicy: Always
+        name: runner
