@@ -6,7 +6,7 @@ secretGenerator:
   env: secrets/secrets.env
   type: Opaque
 #- name: github-package-registry
-#  files: 
+#  files:
 #  - secrets/.dockerconfigjson
 #  type: kubernetes.io/dockerconfigjson
 resources:
