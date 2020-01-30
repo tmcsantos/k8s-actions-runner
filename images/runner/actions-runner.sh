@@ -31,6 +31,35 @@ copy_reference_files() {
   fi
 }
 
+# create registration token
+registrationToken() {
+  local fullname="${GITHUB_REPOSITORY#*github.com/}"
+  local owner="${fullname%%/*}"
+  local repo="${fullname##*/}"
+  local token="$(curl -sS --request POST \
+    --url "https://api.github.com/repos/${owner}/${repo}/actions/runners/registration-token?=" \
+    --header 'accept: application/vnd.github.v3+json' \
+    --header "authorization: Bearer ${GITHUB_TOKEN}" \
+    --header 'content-type: application/json' | jq -r '.token')"
+  echo $token
+}
+
+# configure the runner
+configureRunner() {
+  # make sure we only run this once!
+  if [ ! -e /app/configured ]; then
+    local token=$(registrationToken)
+    # Configure the runner
+    /app/runner/config.sh \
+      --url "${GITHUB_REPOSITORY}" \
+      --token "${token}" \
+      --startuptype service \
+      --unattended \
+      --work "${HOME}/work"
+    touch /app/configured
+  fi
+}
+
 owd="$(pwd)"
 copy_reference_files
 unset RUNNER_CONFIG
@@ -42,17 +71,7 @@ mkdir -p $HOME/work
 
 # If no arguments passed, start the runner.
 if [[ $# -lt 1 ]]; then
-  if [ ! -e /app/configured ]; then
-    # Configure the runner
-    /app/runner/config.sh \
-      --url "${GITHUB_REPOSITORY}" \
-      --token "${GITHUB_TOKEN}" \
-      --startuptype service \
-      --unattended \
-      --work "${HOME}/work"
-    touch /app/configured
-  fi
-
+  configureRunner
   printf "Executing GitHub Runner for $GITHUB_REPOSITORY\n"
   exec /app/runner/run.sh
 fi

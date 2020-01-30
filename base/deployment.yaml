@@ -32,15 +32,10 @@ spec:
           image: registry.local:5000/gh-runner:latest
           imagePullPolicy: Always
           lifecycle:
-            # TODO: implement token generate when available.
-            # https://github.community/t5/GitHub-Actions/API-to-generate-runners-token/td-p/38865
-            postStart:
-              exec:
-                command: ["/bin/sh","-c", "echo Would be nice to register myself"]
             preStop:
               exec:
                 # If pod is evicted, the secrets are no longer valid
-                command: ["/bin/sh", "-c", "echo I wish I could remove myself"]
+                command: ["/bin/bash", "-c", "removeRunner.sh"]
           envFrom:
             - secretRef:
                 name: actions-runner  
