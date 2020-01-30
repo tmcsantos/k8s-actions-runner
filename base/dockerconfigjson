@@ -1,0 +1,9 @@
+{
+  "auths": {
+    "docker.pkg.github.com": {
+      "username": "CHANGEME",
+      "password": "CHANGEME",
+      "auth": "CALCULATEME="
+    }
+  }
+}

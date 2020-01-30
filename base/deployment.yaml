@@ -27,9 +27,12 @@ spec:
           emptyDir: {}
         - name: runner-config
           emptyDir: {}
+      imagePullSecrets:
+        - name: github-package-registry
       containers:
         - name: runner
-          image: registry.local:5000/gh-runner:latest
+          #image: docker.pkg.github.com/tmcsantos/k8s-actions-runner/gh-runner:2.164.0 
+          image: tmcsantos/gh-runner:2.164.0 
           imagePullPolicy: Always
           lifecycle:
             preStop:

@@ -3,7 +3,12 @@ kind: Kustomization
 namespace: gh-runner
 secretGenerator:
 - name: actions-runner
-  env: secrets.env
+  env: secrets/secrets.env
+  type: Opaque
+#- name: github-package-registry
+#  files: 
+#  - secrets/.dockerconfigjson
+#  type: kubernetes.io/dockerconfigjson
 resources:
 - deployment.yaml
 - namespace.yaml
