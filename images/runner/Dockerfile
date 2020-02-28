@@ -1,6 +1,7 @@
 FROM ubuntu:18.04
 
-ARG RUNNER_VERSION=2.164.0
+ARG RUNNER_VERSION=2.165.2
+ARG ARCH=x64
 ENV RUNNER_CONFIG /app
 
 RUN apt-get update && apt-get install -y \
@@ -13,11 +14,12 @@ RUN apt-get update && apt-get install -y \
     software-properties-common \
     git \
     inetutils-ping \
+    libatomic1 \
     sudo
 
 # install docker-cli
 RUN curl -fsSL https://download.docker.com/linux/ubuntu/gpg | apt-key add - && \
-    add-apt-repository "deb [arch=amd64] https://download.docker.com/linux/ubuntu $(lsb_release -cs) stable" && \
+    add-apt-repository "deb [arch=$(dpkg --print-architecture)] https://download.docker.com/linux/ubuntu $(lsb_release -cs) stable" && \
     add-apt-repository -y ppa:git-core/ppa && \
     apt-get update && \
     apt-get install -y \
@@ -27,7 +29,7 @@ RUN curl -fsSL https://download.docker.com/linux/ubuntu/gpg | apt-key add - && \
 RUN useradd -ms /bin/bash github && \
     mkdir -p /app /usr/share/runner/ref && \
     cd /usr/share/runner/ref && \
-    curl -fsSL https://github.com/actions/runner/releases/download/v$RUNNER_VERSION/actions-runner-linux-x64-$RUNNER_VERSION.tar.gz | tar -xz && \
+    curl -fsSL https://github.com/actions/runner/releases/download/v$RUNNER_VERSION/actions-runner-linux-$ARCH-$RUNNER_VERSION.tar.gz | tar -xz && \
     bash /usr/share/runner/ref/bin/installdependencies.sh && \
     chown -R github:github /app /usr/share/runner/ref
 
